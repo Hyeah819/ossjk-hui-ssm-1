@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ossjk.ossjkssm.system.mapper.OrganizationMapper">
+
+	<resultMap id="BaseResultMap"
+		type="com.ossjk.ossjkssm.system.entity.Organization">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="sort" property="sort" jdbcType="INTEGER" />
+		<result column="crtm" property="crtm" jdbcType="TIMESTAMP" />
+		<result column="mdtm" property="mdtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, name, remarks, sort, crtm, mdtm
+	</sql>
+
+	<!-- 查询所有组织 -->
+	<select id="selectAllOrganization"
+		resultType="com.ossjk.ossjkssm.system.entity.Organization">
+		select * from organization
+	</select>
+
+	<!-- 查询单个组织 -->
+	<select id="selectOrganization" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from organization
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<!-- 通过名字查询组织 -->
+	<select id="selectOrganizationByName"
+		resultType="com.ossjk.ossjkssm.system.entity.Organization">
+		select * from organization where name like
+		concat(concat("%",#{name}),"%")
+	</select>
+
+	<!-- 批量删除组织 -->
+	<delete id="batchDelete">
+		delete from organization where id in
+		<foreach collection="array" item="id" index="no" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 增加组织 -->
+	<insert id="insertOrganization"
+		parameterType="com.ossjk.ossjkssm.system.entity.Organization">
+		insert into organization (id, name, remarks,sort, crtm,
+		mdtm
+		)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{remarks,jdbcType=VARCHAR},
+		#{sort,jdbcType=INTEGER},
+		#{crtm,jdbcType=TIMESTAMP},
+		#{mdtm,jdbcType=TIMESTAMP})
+	</insert>
+
+	<!-- 修改组织 -->
+	<update id="updateOrganization"
+		parameterType="com.ossjk.ossjkssm.system.entity.Organization">
+		update organization
+		set name = #{name,jdbcType=VARCHAR},
+		remarks = #{remarks,jdbcType=VARCHAR},
+		sort = #{sort,jdbcType=INTEGER},
+		crtm = #{crtm,jdbcType=TIMESTAMP},
+		mdtm = #{mdtm,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 删除组织 -->
+	<delete id="deleteOrganization"
+		parameterType="java.lang.Integer">
+		delete from
+		organization
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>

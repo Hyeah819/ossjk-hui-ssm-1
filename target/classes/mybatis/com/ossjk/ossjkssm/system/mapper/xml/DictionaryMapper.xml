@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ossjk.ossjkssm.system.mapper.DictionaryMapper">
+	<!-- 字典集合 -->
+	<resultMap id="BaseResultMap"
+		type="com.ossjk.ossjkssm.system.entity.Dictionary">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="dkey" property="dkey" jdbcType="VARCHAR" />
+		<result column="dvalue" property="dvalue" jdbcType="VARCHAR" />
+		<result column="crtm" property="crtm" jdbcType="TIMESTAMP" />
+		<result column="mdtm" property="mdtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, dkey, dvalue, crtm, mdtm
+	</sql>
+
+	<!-- 查询所有字典 -->
+	<select id="selectAllDictionary"
+		resultType="com.ossjk.ossjkssm.system.entity.Dictionary">
+		select * from dictionary
+	</select>
+
+	<!-- 查询单个字典 -->
+	<select id="selectDictionary" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from dictionary
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<!-- 通过键查询字典 -->
+	<select id="selectDictionaryByDkey"
+		resultType="com.ossjk.ossjkssm.system.entity.Dictionary">
+		select * from dictionary where dkey like concat(concat("%",#{dkey}),"%")
+	</select>
+
+	<!-- 批量删除字典 -->
+	<delete id="batchDelete">
+		delete from dictionary where id in
+		<foreach collection="array" item="id" index="no" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 增加字典 -->
+	<insert id="insertDictionary"
+		parameterType="com.ossjk.ossjkssm.system.entity.Dictionary">
+		insert into dictionary (id, dkey, dvalue, crtm, mdtm
+		) values (#{id,jdbcType=INTEGER}, #{dkey,jdbcType=VARCHAR},
+		#{dvalue,jdbcType=VARCHAR},
+		#{crtm,jdbcType=TIMESTAMP}, #{mdtm,jdbcType=TIMESTAMP})
+	</insert>
+
+	<!-- 修改字典 -->
+	<update id="updateDictionary"
+		parameterType="com.ossjk.ossjkssm.system.entity.Dictionary">
+		update dictionary
+		set dkey = #{dkey,jdbcType=VARCHAR},
+		dvalue = #{dvalue,jdbcType=VARCHAR},
+		crtm = #{crtm,jdbcType=TIMESTAMP},
+		mdtm = #{mdtm,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 删除字典 -->
+	<delete id="deleteDictionary" parameterType="java.lang.Integer">
+		delete from
+		dictionary
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>

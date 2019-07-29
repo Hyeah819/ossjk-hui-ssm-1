@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ossjk.ossjkssm.system.mapper.DeviceTypeMapper">
+	<!-- 设备集合 -->
+	<resultMap id="BaseResultMap"
+		type="com.ossjk.ossjkssm.system.entity.DeviceType">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="brand" property="brand" jdbcType="VARCHAR" />
+		<result column="model" property="model" jdbcType="VARCHAR" />
+		<result column="inmodel" property="inmodel" jdbcType="VARCHAR" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+		<result column="crtm" property="crtm" jdbcType="TIMESTAMP" />
+		<result column="mdtm" property="mdtm" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,name,brand,model,inmodel,remarks,crtm, mdtm
+	</sql>
+
+	<!-- 查询所有设备 -->
+	<select id="selectAllDeviceType"
+		resultType="com.ossjk.ossjkssm.system.entity.DeviceType">
+		select * from devicetype
+	</select>
+
+	<!-- 查询单个设备 -->
+	<select id="selectDeviceType" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from devicetype
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<!-- 通过名字查询设备 -->
+	<select id="selectDeviceTypeByDkey"
+		resultType="com.ossjk.ossjkssm.system.entity.DeviceType">
+		select * from  devicetype where name like
+		concat(concat("%",#{name}),"%")
+	</select>
+
+	<!-- 批量删除设备 -->
+	<delete id="batchDelete">
+		delete from  devicetype where id in
+		<foreach collection="array" item="id" index="no" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 增加设备 -->
+	<insert id="insertDeviceType"
+		parameterType="com.ossjk.ossjkssm.system.entity.DeviceType">
+		insert into devicetype (id,name,brand,model,inmodel,remarks, crtm, mdtm
+		)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{brand,jdbcType=VARCHAR},
+		#{model,jdbcType=VARCHAR},
+		#{inmodel,jdbcType=VARCHAR},
+		#{remarks,jdbcType=VARCHAR},
+		#{crtm,jdbcType=TIMESTAMP},
+		#{mdtm,jdbcType=TIMESTAMP})
+	</insert>
+
+	<!-- 修改设备 -->
+	<update id="updateDeviceType"
+		parameterType="com.ossjk.ossjkssm.system.entity.DeviceType">
+		update devicetype
+		set name = #{name,jdbcType=VARCHAR},
+		brand = #{brand,jdbcType=VARCHAR},
+		model = #{model,jdbcType=VARCHAR},
+		inmodel = #{inmodel,jdbcType=VARCHAR},
+		remarks = #{remarks,jdbcType=VARCHAR},
+		crtm = #{crtm,jdbcType=TIMESTAMP},
+		mdtm = #{mdtm,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<!-- 删除设备 -->
+	<delete id="deleteDeviceType" parameterType="java.lang.Integer">
+		delete from
+		devicetype
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+</mapper>
