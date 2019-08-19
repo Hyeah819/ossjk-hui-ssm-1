@@ -34,12 +34,25 @@
 				"name": "设备管理",
 				"icon": "&#xeaf3;",
 				"child": [
-						{
-							"name": "类型管理",
-							"href": "${pageContext.request.contextPath}/system/devicetype/list.do"
-						},
-						]		
-			}
+							{
+								"name": "类型管理",
+								"href": "${pageContext.request.contextPath}/system/devicetype/list.do"
+							},
+							]
+			} ,{
+				"name": "家具图书管理",
+				"icon": "&#xe625;",
+				"child": [
+							{
+							"name": "家具图书类型（光类型）",
+							"href": "${pageContext.request.contextPath}/system/furnitureBook/list.do"
+							},
+							{
+							"name": "家具图书管理库（包括操作）",
+							"href": "${pageContext.request.contextPath}/system/furnitureBookManage/list.do"
+							},
+						]
+					}
 			]
 	</jk:menu>
 	<div class="Hui-admin-aside-mask"></div>

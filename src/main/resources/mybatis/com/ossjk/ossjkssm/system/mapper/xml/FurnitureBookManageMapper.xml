@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ossjk.ossjkssm.system.mapper.FurnitureBookManageMapper">
+    <resultMap id="BaseResultMap" type="com.ossjk.ossjkssm.system.entity.FurnitureBookManage">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="fbName" property="fbName" jdbcType="VARCHAR" />
+        <result column="fbBrand" property="fbBrand" jdbcType="VARCHAR" />
+        <result column="fbType" property="fbType" jdbcType="VARCHAR" />
+        <result column="fbSpec" property="fbSpec" jdbcType="VARCHAR" />
+        <result column="bsName" property="bsName" jdbcType="VARCHAR" />
+        <result column="dsName" property="dsName" jdbcType="VARCHAR" />
+        <result column="msName" property="msName" jdbcType="VARCHAR" />
+        <result column="rsName" property="rsName" jdbcType="VARCHAR" />
+        <result column="borrowBy" property="borrowBy" jdbcType="VARCHAR" />
+        <result column="borrowTime" property="borrowTime" jdbcType="TIMESTAMP" />
+        <result column="borrowStatus" property="borrowStatus" jdbcType="INTEGER" />
+        <result column="repairStatus" property="repairStatus" jdbcType="INTEGER" />
+        <result column="damageStatus" property="damageStatus" jdbcType="INTEGER" />
+        <result column="maintainStatus" property="maintainStatus" jdbcType="INTEGER" />
+        <result column="pipelineNumber" property="pipelineNumber" jdbcType="VARCHAR" />
+        <result column="register" property="register" jdbcType="VARCHAR" />
+        <result column="borrowNumber" property="borrowNumber" jdbcType="VARCHAR" />
+        <result column="borrowBy" property="borrowBy" jdbcType="VARCHAR" />
+    </resultMap>
+<!--    <sql id="Base_Column_List">
+		id, fbName, fbBrand, fbType, fbSpec, borrowStatus, damageStatus, maintainStatus
+	</sql>-->
+    <!--带条件的查询全部数据-->
+    <select id="selectAll"  resultMap="BaseResultMap">
+
+              SELECT
+        fbm.id,
+        fbm.fbName,
+        fbm.fbSpec,
+        fbm.register,
+		fbm.pipelineNumber,
+        (SELECT fbValue FROM fb_datadictionary WHERE fbm.borrowStatus = fbKey and typeName = 'BS') AS bsName,
+		fbm.borrowBy,
+		fbm.borrowNumber,
+		fbm.borrowStatus,
+		fbm.damageStatus,
+		fbm.maintainStatus,
+        (SELECT fbValue FROM fb_datadictionary WHERE fbm.damageStatus = fbKey and typeName = 'DS') AS dsName,
+        (SELECT fbValue FROM fb_datadictionary WHERE fbm.repairStatus = fbKey and typeName = 'RS') AS rsName,
+        (SELECT fbValue FROM fb_datadictionary WHERE fbm.maintainStatus = fbKey and typeName = 'MS') AS msName
+        FROM
+        fb_manage fbm
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="fbName!=null and fbName!=''">
+                AND fbName LIKE CONCAT('%',#{fbName},'%')
+            </if>
+            <if test="borrowStatus!=null and borrowStatus!=''">
+                AND borrowStatus = #{borrowStatus}
+            </if>
+            <if test="damageStatus!=null and damageStatus!=''">
+                AND damageStatus = #{damageStatus}
+            </if>
+        </trim>
+    </select>
+    <!--   添加数据   -->
+    <!--now()表示的是创建时间-->
+    <insert id="insert" parameterType="com.ossjk.ossjkssm.system.entity.FurnitureBookManage">
+		insert into fb_manage ( fbName, fbSpec,pipelineNumber,register,repairStatus,borrowStatus,damageStatus,maintainStatus)
+		values (#{fbName,jdbcType=VARCHAR},#{fbSpec,jdbcType=VARCHAR},#{pipelineNumber,jdbcType=VARCHAR},#{register,jdbcType=VARCHAR},
+		1,1,1,1
+		)
+	</insert>
+    <!--实现流水号自增-->
+    <select id="selectLast" resultType="string">
+        select max(fb_manage.pipelineNumber) from fb_manage where fb_manage.pipelineNumber like "%J%"
+    </select>
+    <select id="selectLastBm" resultType="string">
+        select max(fb_manage.borrowNumber) from fb_manage where fb_manage.borrowNumber like "%DJJ%"
+    </select>
+    <!-- 批量删除 -->
+    <delete id="batchDelete">
+        delete from fb_manage where id in
+        <foreach collection="array" item="id" index="no" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <update id="updateBorrowStatus">
+       UPDATE fb_manage SET borrowStatus=#{borrowStatus},borrowNumber=#{borrowNumber},borrowBy=#{name} WHERE id=#{id}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select * from fb_manage
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <update id="updateByPrimaryKey" parameterType="com.ossjk.ossjkssm.system.entity.FurnitureBook">
+		update fb_manage
+		set fbName = #{fbName,jdbcType=VARCHAR},
+		fbSpec = #{fbSpec,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+    <update id="updateRepairName">
+        update fb_manage set repairStatus=2,maintainStatus=2 where id=#{id}
+    </update>
+    <update id="updateMaintainName">
+        UPDATE fb_manage SET repairStatus=1,maintainStatus=3,damageStatus=1 WHERE id=#{id}
+    </update>
+    <delete id="updateById">
+        UPDATE fb_manage SET maintainStatus=5,damageStatus=2,borrowStatus=1 WHERE id=#{id}
+    </delete>
+</mapper>

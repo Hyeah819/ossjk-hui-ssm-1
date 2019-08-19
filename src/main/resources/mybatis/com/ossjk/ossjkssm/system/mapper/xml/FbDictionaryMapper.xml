@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ossjk.ossjkssm.system.mapper.FbDictionaryMapper">
+    <resultMap id="BaseResultMap" type="com.ossjk.ossjkssm.system.entity.FbDictionary">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="typeName" property="typeName" jdbcType="VARCHAR" />
+        <result column="fbKey" property="fbKey" jdbcType="INTEGER" />
+        <result column="fbValue" property="fbValue" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+		id, typeName, fbKey, fbValue
+	</sql>
+    <select id="selectBs" resultType="com.ossjk.ossjkssm.system.entity.FbDictionary">
+        SELECT * from fb_datadictionary
+        WHERE typeName="BS"
+    </select>
+    <select id="selectDs" resultType="com.ossjk.ossjkssm.system.entity.FbDictionary">
+        SELECT * from fb_datadictionary
+        WHERE typeName="DS"
+    </select>
+</mapper>
